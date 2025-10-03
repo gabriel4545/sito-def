@@ -1,0 +1,98 @@
+<?php
+/**
+ * Configurazione Database 
+ * File di esempio che replica l'originale per conettermi al db
+ * 
+ */
+
+// Impedisce l'accesso diretto al file
+if (!defined('DB_CONFIG_INCLUDED')) {
+    define('DB_CONFIG_INCLUDED', true);
+}
+
+// Configurazione database
+class DatabaseConfig {
+    // Credenziali database - SOSTITUIRE CON VALORI REALI
+    private static $host = "";           
+    private static $username = "";   
+    private static $password = "";   
+    private static $database = "";   
+    
+    // Opzioni di connessione
+    private static $charset = "utf8mb4";
+    private static $options = [
+        MYSQLI_OPT_CONNECT_TIMEOUT => 10,
+        MYSQLI_INIT_COMMAND => "SET NAMES utf8mb4"
+    ];
+    
+    /**
+     * Crea una nuova connessione al database
+     * @return mysqli Oggetto connessione MySQLi
+     * @throws Exception Se la connessione fallisce
+     */
+    public static function getConnection() {
+        try {
+            // Crea la connessione
+            $conn = new mysqli(
+                self::$host, 
+                self::$username, 
+                self::$password, 
+                self::$database
+            );
+            
+            // Verifica errori di connessione
+            if ($conn->connect_error) {
+                throw new Exception("Connessione fallita: " . $conn->connect_error);
+            }
+            
+            // Imposta il charset
+            if (!$conn->set_charset(self::$charset)) {
+                throw new Exception("Errore nell'impostazione del charset: " . $conn->error);
+            }
+            
+            return $conn;
+            
+        } catch (Exception $e) {
+            error_log("Errore connessione database: " . $e->getMessage());
+            throw new Exception("Errore di connessione al database");
+        }
+    }
+    
+    /**
+     * Ottiene una connessione semplice per retrocompatibilità
+     * @return mysqli
+     */
+    public static function connect() {
+        return self::getConnection();
+    }
+    
+    /**
+     * Chiude la connessione
+     * @param mysqli $conn Connessione da chiudere
+     */
+    public static function closeConnection($conn) {
+        if ($conn && !$conn->connect_error) {
+            $conn->close();
+        }
+    }
+    
+    /**
+     * Ottiene le informazioni sulla connessione (per debug)
+     * @return array
+     */
+    public static function getConnectionInfo() {
+        return [
+            'host' => self::$host,
+            'database' => self::$database,
+            'charset' => self::$charset
+        ];
+    }
+}
+
+// Funzione helper per retrocompatibilità
+function getDatabaseConnection() {
+    return DatabaseConfig::getConnection();
+}
+
+
+?>

@@ -1,0 +1,28 @@
+
+[data-theme="light"] {
+    --background: #FFF7F1;
+    --primary: #E78895;
+    --secondary: #FFE4C9;
+    --greenn: #BED1CF;
+
+}
+
+.navbar {
+    padding: 20px 50px;
+    background-color: var(--primary);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.438);
+    z-index: 1000;
+    transition: background-color 0.5s;
+}
+.active {
+    text-transform: uppercase;
+    box-shadow: #BED1CF 0px 0px 10px;
+
+}
+.text{
+    font-size: 2rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#map {
+    height: 10rem;
+  }
